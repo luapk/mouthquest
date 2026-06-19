@@ -435,7 +435,9 @@ export default function MouthGym(){
       <style>{CSS}</style>
       {loading && <Loader/>}
       <header style={S.header}>
-        <div style={{display:"flex",alignItems:"baseline",gap:10,flexWrap:"wrap"}}>
+        <div style={{display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
+          <img src={ORALB_LOGO} alt="Oral-B" style={{height:28,objectFit:"contain",filter:"brightness(0) invert(1)",opacity:0.85}}/>
+          <span style={{color:"rgba(234,252,255,0.3)",fontSize:18,fontWeight:300,lineHeight:1}}>×</span>
           <span style={S.logo}>MOUTH<span style={{color:C.turq}}>QUEST</span></span>
           <span style={S.tag}>healthy-lifestyle space hero · working title</span>
         </div>
