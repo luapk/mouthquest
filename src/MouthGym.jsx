@@ -446,11 +446,10 @@ export default function MouthGym(){
 
       <div style={S.tabs}>
         <button style={{...S.tabBtn,...(tab==="play"?S.tabOn:{})}} onClick={()=>setTab("play")}>Play</button>
-        <button style={{...S.tabBtn,...(tab==="stats"?S.tabOn:{})}} onClick={()=>setTab("stats")}>Stats</button>
+        <button style={{...S.tabBtn,...(tab==="stats"?S.tabOn:{})}} onClick={()=>setTab("stats")}>Scores</button>
       </div>
 
-      {tab==="play" ? (
-        <>
+      <div style={{display:tab==="play"?"block":"none"}}>
           <div style={S.controls}>
             <button style={{...S.btn,...S.btnPrimary}} onClick={connectReal}>Connect Oral-B</button>
             {simOn ? <button style={{...S.btn,...S.btnGhost}} onClick={stopSim}>Pause</button>
@@ -486,10 +485,10 @@ export default function MouthGym(){
           <button style={S.engineToggle} onClick={()=>setEngineOpen(o=>!o)}>{engineOpen?"▾ Hide brush link":"▸ Brush link (live data)"}</button>
           {engineOpen && <Engine tele={tele} source={source}/>}
           <footer style={S.footer}>Real brushing drives the hero in every scene. Same parser runs on simulated and live Oral-B packets.</footer>
-        </>
-      ) : (
+      </div>
+      <div style={{display:tab==="stats"?"block":"none"}}>
         <StatsView streak={streak} unlocks={unlocks} sessions={sessionsThisWeek}/>
-      )}
+      </div>
     </div>
   );
 }
