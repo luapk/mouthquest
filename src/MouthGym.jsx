@@ -649,7 +649,7 @@ const S={
   loader:{position:"fixed",inset:0,zIndex:9999,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",background:"radial-gradient(120% 80% at 50% 30%, #1a0b33 0%, #0c0720 50%, #06040d 100%)",fontFamily:"'Nunito',system-ui,sans-serif"},
   loaderInner:{display:"flex",flexDirection:"column",alignItems:"center",animation:"loaderIn 0.4s ease-out"},
   loaderBrand:{fontFamily:"'Fredoka',sans-serif",fontWeight:700,fontSize:34,color:"#eafcff",letterSpacing:"0.5px"},
-  loaderLogo:{width:230,height:"auto",marginBottom:8,filter:"drop-shadow(0 0 18px rgba(60,90,200,0.55))"},
+  loaderLogo:{width:180,height:"auto",marginBottom:8,filter:"brightness(0) invert(1)",opacity:0.9},
   reg:{fontSize:13,verticalAlign:"super",opacity:0.65},
   loaderPresents:{fontSize:12,color:"rgba(234,252,255,0.5)",fontWeight:800,letterSpacing:"4px",textTransform:"uppercase",margin:"4px 0 8px"},
   loaderTitle:{fontFamily:"'Fredoka',sans-serif",fontWeight:700,fontSize:46,letterSpacing:"1px",textShadow:"0 0 26px rgba(46,230,214,0.6)"},
