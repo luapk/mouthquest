@@ -442,9 +442,8 @@ export default function MouthGym(){
       <header style={S.header}>
         <div style={{display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
           <img src={ORALB_LOGO} alt="Oral-B" style={{height:28,objectFit:"contain",opacity:0.9}}/>
-          <span style={{color:"rgba(234,252,255,0.3)",fontSize:18,fontWeight:300,lineHeight:1}}>×</span>
           <span style={S.logo}>MOUTH<span style={{color:C.turq}}>QUEST</span></span>
-          <span style={S.tag}>healthy-lifestyle space hero · working title</span>
+          <span style={S.tag}>Healthy-Lifestyle Space Hero</span>
         </div>
         <StatusPill source={source} phase={phase} model={tele?.model}/>
       </header>
@@ -580,7 +579,7 @@ const S={
   shell:{fontFamily:"'Nunito',ui-rounded,system-ui,sans-serif",color:"#eafcff",background:"radial-gradient(120% 80% at 50% -10%, #1a0b33 0%, #0c0720 45%, #06040d 100%)",minHeight:"100vh",padding:"18px 16px 40px",maxWidth:720,margin:"0 auto"},
   header:{display:"flex",justifyContent:"space-between",alignItems:"center",gap:12,flexWrap:"wrap",marginBottom:12},
   logo:{fontFamily:"'Fredoka',sans-serif",fontWeight:700,fontSize:26,letterSpacing:"1px",textShadow:"0 0 18px rgba(46,230,214,0.5)"},
-  tag:{fontSize:12,color:"rgba(234,252,255,0.55)",fontWeight:700},
+  tag:{fontSize:12,color:"#eafcff",fontWeight:700},
   pill:{display:"inline-flex",alignItems:"center",gap:8,padding:"6px 12px",borderRadius:999,background:"rgba(0,0,0,0.3)",border:"1px solid rgba(46,230,214,0.25)",fontWeight:800,fontSize:13},
   dot:{width:9,height:9,borderRadius:999},
   pillMeta:{color:"rgba(234,252,255,0.6)",fontWeight:700,fontSize:12,borderLeft:"1px solid rgba(255,255,255,0.15)",paddingLeft:8},
