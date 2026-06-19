@@ -35,8 +35,8 @@ function buildSimBytes({stateCode,pressureCode,seconds,modeCode,sectorCode}){ co
 
 /* ===================== CONSTANTS ===================== */
 const QUADS=[
-  {id:0,label:"Top left",scene:"CYCLE & BLAST",tag:"CYCLE",verb:"Blast the germs!",col:0,row:0},
-  {id:1,label:"Top right",scene:"RUN & LEAP",tag:"RUN",verb:"Time your jumps!",col:1,row:0},
+  {id:0,label:"Top left",scene:"RUN & BLAST",tag:"RUN",verb:"Blast the germs!",col:0,row:0},
+  {id:1,label:"Top right",scene:"JUMP",tag:"JUMP",verb:"Jump and squash!",col:1,row:0},
   {id:2,label:"Bottom left",scene:"DEEP BLAST",tag:"SWIM",verb:"Blast them underwater!",col:0,row:1},
   {id:3,label:"Bottom right",scene:"SPIRE CLIMB",tag:"CLIMB",verb:"Climb! Knock them off!",col:1,row:1},
 ];
@@ -206,12 +206,13 @@ function updateScene(w,q,st,dt,sfx){
   const speed=(q===1?210:175);
   for(const g of lane){ if(g.pop>0){ g.pop+=dt; continue; } g.x-=speed*dt; }
   const active=st.active && !st.pressureHigh;
-  if(q===1){ // RUN: germs charge in; a well-timed jump pops them
+  if(q===1){ // JUMP: hero leaps over germ, squashes it on the way down
     if(w.jt[q]>0){ w.jt[q]+=dt; if(w.jt[q]>=JUMP_DUR) w.jt[q]=0; }
     let near=null,nd=1e9; for(const g of lane){ if(g.pop>0||g.passed) continue; const d=g.x-HEROX[q]; if(d>-20&&d<nd){ nd=d; near=g; } }
-    if(active && near && nd<95 && w.jt[q]<=0) w.jt[q]=0.0001; // auto-trigger jump as the germ arrives
-    const phase=w.jt[q]>0?w.jt[q]/JUMP_DUR:0; const airborne=phase>0.12&&phase<0.88;
-    for(const g of lane){ if(g.pop>0||g.passed) continue; if(Math.abs(g.x-HEROX[q])<54){ if(airborne){ g.pop=0.0001; spawnBurst(w,ox+g.x,oy+g.y,C.germ,16); if(w.focused===q)sfx("hit"); } else if(g.x<HEROX[q]+10){ g.passed=true; } } }
+    // jump early enough that the hero is descending when the germ arrives underneath
+    if(active && near && nd<170 && w.jt[q]<=0) w.jt[q]=0.0001;
+    const phase=w.jt[q]>0?w.jt[q]/JUMP_DUR:0; const descending=phase>0.62&&phase<0.96;
+    for(const g of lane){ if(g.pop>0||g.passed) continue; if(Math.abs(g.x-HEROX[q])<54){ if(descending){ g.pop=0.0001; spawnBurst(w,ox+g.x,oy+g.y,C.germ,16); if(w.focused===q)sfx("hit"); } else if(g.x<HEROX[q]+10&&phase===0){ g.passed=true; } } }
   } else { // CYCLE / SWIM: laser nearest germ
     w.fireT[q]-=dt; const rate=0.16+(1-st.intensity)*0.22;
     if(active && w.fireT[q]<=0){
