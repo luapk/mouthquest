@@ -375,6 +375,7 @@ function MouthGymApp(){
     const loop=setInterval(()=>{
       const inp=inputRef.current;
       if(inp.seconds!=null) setSeconds(inp.seconds);
+      if(completedRef.current.every(Boolean)){ setPhase("done"); setActiveQuad(null); return; }
       if(!inp.running){ setPhase("idle"); setActiveQuad(null); return; }
       if(inp.pressureHigh){ setPhase("easeoff"); setCoach("Ease off — gentle does it. Hard brushing hurts your gums."); return; }
       setPhase("brushing"); setReps(r=>r+1);
@@ -517,7 +518,7 @@ function MouthGymApp(){
               <div style={S.finale}>
                 <div style={S.finaleMain}>ALL FRESH!</div>
                 <div style={S.finaleSub}>Mouth cleared · streak {streak}🔥 · +1 unlocked</div>
-                <button style={{...S.btn,...S.btnMint,marginTop:14}} onClick={reset}>Play again</button>
+                <button style={{...S.btn,...S.btnMint,marginTop:14}} onClick={()=>setTab("stats")}>Check Score</button>
               </div>
             )}
           </div>
