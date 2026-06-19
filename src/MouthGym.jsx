@@ -502,15 +502,7 @@ function Loader(){
       <img src={ORALB_LOGO} alt="Oral-B" style={S.loaderLogo}/>
       <div style={S.loaderPresents}>presents</div>
       <div style={S.loaderTitle}>MOUTH<span style={{color:C.turq}}>QUEST</span></div>
-      <svg width="150" height="120" viewBox="0 0 150 120" style={{margin:"6px 0"}}>
-        <g style={{transformOrigin:"75px 60px",animation:"brushWiggle 0.55s ease-in-out infinite"}}>
-          <rect x="14" y="54" width="70" height="13" rx="6" fill="#eafcff"/>
-          <rect x="80" y="50" width="30" height="20" rx="6" fill="#2ee6d6"/>
-          {[0,1,2,3,4,5].map(i=>(<rect key={i} x={16+i*11} y="45" width="6" height="11" rx="2" fill="#2ee6d6"/>))}
-        </g>
-        <path d="M104 70 C104 58 126 58 126 70 C126 84 115 94 115 94 C115 94 104 84 104 70 Z" fill="#ffffff"/>
-        <circle cx="113" cy="58" r="3" fill="#2ee6d6"><animate attributeName="opacity" values="0.2;1;0.2" dur="0.9s" repeatCount="indefinite"/></circle>
-      </svg>
+      <img src="/hero-loader.jpg" alt="" style={{width:220,height:"auto",imageRendering:"pixelated",margin:"16px 0 12px"}}/>
       <div style={S.loaderBarTrack}><div style={S.loaderBarFill}/></div>
       <div style={S.loaderNote}>Warming up your daily workout…</div>
       </div>
