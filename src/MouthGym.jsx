@@ -265,6 +265,38 @@ const COVERAGE=[{n:"Upper left",v:96},{n:"Upper right",v:92},{n:"Lower left",v:8
 
 /* ===================== MAIN ===================== */
 export default function MouthGym(){
+  const [unlocked,setUnlocked]=useState(false);
+  if(!unlocked) return <PasswordGate onUnlock={()=>setUnlocked(true)}/>;
+
+  return <MouthGymApp/>;
+}
+
+function PasswordGate({onUnlock}){
+  const [val,setVal]=useState(""); const [err,setErr]=useState(false);
+  const submit=()=>{ if(val.trim().toLowerCase()==="oral-b"){ onUnlock(); } else { setErr(true); setTimeout(()=>setErr(false),900); } };
+  return (
+    <div style={{...S.shell,display:"flex",alignItems:"center",justifyContent:"center",minHeight:"100vh"}}>
+      <style>{CSS}</style>
+      <div style={{textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",gap:16,animation:"loaderIn 0.4s ease-out"}}>
+        <img src={ORALB_LOGO} alt="Oral-B" style={{height:36,objectFit:"contain",opacity:0.9,marginBottom:4}}/>
+        <div style={S.logo}>MOUTH<span style={{color:C.turq}}>QUEST</span></div>
+        <input
+          autoFocus
+          type="password"
+          placeholder="Enter password"
+          value={val}
+          onChange={e=>{setVal(e.target.value);setErr(false);}}
+          onKeyDown={e=>e.key==="Enter"&&submit()}
+          style={{fontFamily:"'Nunito',sans-serif",fontSize:16,fontWeight:700,padding:"12px 18px",borderRadius:13,border:`1.5px solid ${err?"#ff6b7a":"rgba(46,230,214,0.4)"}`,background:"rgba(0,0,0,0.35)",color:"#eafcff",outline:"none",width:220,textAlign:"center",transition:"border-color 0.2s",boxShadow:err?"0 0 16px rgba(255,107,122,0.3)":"none"}}
+        />
+        <button style={{...S.btn,...S.btnMint,width:220}} onClick={submit}>Enter</button>
+        {err && <div style={{fontSize:13,fontWeight:700,color:"#ff6b7a"}}>Incorrect password</div>}
+      </div>
+    </div>
+  );
+}
+
+function MouthGymApp(){
   const [tab,setTab]=useState("play");
   const [loading,setLoading]=useState(true);
   const [activeQuad,setActiveQuad]=useState(null);
