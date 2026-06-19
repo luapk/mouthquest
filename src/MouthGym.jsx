@@ -456,12 +456,20 @@ export default function MouthGym(){
 
       <div style={{display:tab==="play"?"block":"none"}}>
           <div style={S.controls}>
-            <button style={{...S.btn,...S.btnPrimary}} onClick={connectReal}>Connect Oral-B</button>
-            {simOn ? <button style={{...S.btn,...S.btnGhost}} onClick={stopSim}>Pause</button>
-                   : <button style={{...S.btn,...S.btnMint}} onClick={startSim}>Simulate brushing</button>}
-            <button style={{...S.btn,...S.btnGhost}} onClick={reset}>Reset</button>
-            <button style={{...S.btn,...S.btnGhost}} onClick={()=>setSound(s=>!s)}>{sound?"Sound on":"Sound off"}</button>
-            <div style={S.rowTimer}><span style={S.rowTimerVal}>{mmss}</span><span style={S.rowTimerFresh}>{activeQuad!=null?QUADS[activeQuad].tag+" · ":""}{overall}% fresh</span></div>
+            <div style={S.ctrlPrimary}>
+              <button style={{...S.btn,...S.btnPrimary}} onClick={connectReal}>Connect Oral-B</button>
+              {simOn ? <button style={{...S.btn,...S.btnGhost}} onClick={stopSim}>Pause</button>
+                     : <button style={{...S.btn,...S.btnMint}} onClick={startSim}>Simulate brushing</button>}
+              <div style={S.ctrlSecondary}>
+                <button style={{...S.btn,...S.btnGhost,...S.btnSm}} onClick={reset}>Reset</button>
+                <button style={{...S.btn,...S.btnGhost,...S.btnSm}} onClick={()=>setSound(s=>!s)}>{sound?"♪ On":"♪ Off"}</button>
+              </div>
+            </div>
+            <div style={S.timerWidget}>
+              <BrushIcon active={phase==="brushing"}/>
+              <div style={S.timerVal}>{mmss}</div>
+              <div style={S.timerSub}>{activeQuad!=null?QUADS[activeQuad].tag+" · ":""}{overall}% fresh</div>
+            </div>
           </div>
           {error && <div style={S.error}>{error}</div>}
           <div style={S.stage}>
@@ -484,9 +492,10 @@ export default function MouthGym(){
           <div style={{...S.coach, ...(phase==="easeoff"?S.coachWarn:phase==="done"?S.coachDone:{})}}>
             {phase==="easeoff"?"⚠ ":phase==="done"?"★ ":"› "}{coach}
           </div>
-          <div style={S.stats}>
+          <div style={S.statRow}>
             <Stat label="Score" value={score}/><Stat label="Reps" value={reps}/><Stat label="Streak" value={`${streak}🔥`}/><Stat label="Unlocked" value={unlocks}/>
           </div>
+          <div style={S.divider}/>
           <button style={S.engineToggle} onClick={()=>setEngineOpen(o=>!o)}>{engineOpen?"▾ Hide brush link":"▸ Brush link (live data)"}</button>
           {engineOpen && <Engine tele={tele} source={source}/>}
           <footer style={S.footer}>Real brushing drives the hero in every scene. Same parser runs on simulated and live Oral-B packets.</footer>
@@ -516,6 +525,19 @@ function Loader(){
 }
 
 /* ===================== UI BITS ===================== */
+function BrushIcon({active}){
+  return (
+    <svg width="44" height="24" viewBox="0 0 88 28" style={{display:"block",margin:"0 auto"}}>
+      <g style={active?{animation:"brushWiggle 0.5s ease-in-out infinite",transformOrigin:"44px 14px"}:{}}>
+        <rect x="4" y="10" width="50" height="9" rx="4.5" fill="#eafcff" opacity="0.85"/>
+        <rect x="50" y="6" width="32" height="17" rx="5" fill="#2ee6d6"/>
+        <rect x="6" y="2" width="8" height="10" rx="3" fill="#2ee6d6"/>
+        <rect x="18" y="2" width="8" height="10" rx="3" fill="#2ee6d6"/>
+        <rect x="30" y="2" width="8" height="10" rx="3" fill="#2ee6d6"/>
+      </g>
+    </svg>
+  );
+}
 function StatusPill({source,phase,model}){ const map={idle:["Idle","rgba(234,252,255,0.5)"],brushing:["Brushing",C.turq],easeoff:["Ease off","#ff6b7a"],done:["Complete","#ff5c9a"]}; const [label,color]=map[phase]||map.idle; return (<div style={S.pill}><span style={{...S.dot,background:color,boxShadow:`0 0 10px ${color}`}}/><span style={{color}}>{label}</span><span style={S.pillMeta}>{source==="real"?(model||"Oral-B"):source==="sim"?"Sim":"No link"}</span></div>); }
 function Stat({label,value}){ return (<div style={S.stat}><div style={S.statValue}>{value}</div><div style={S.statLabel}>{label}</div></div>); }
 function Engine({tele,source}){
@@ -587,8 +609,14 @@ const S={
   tabs:{display:"flex",gap:6,marginBottom:12,background:"rgba(0,0,0,0.3)",padding:5,borderRadius:14,width:"fit-content"},
   tabBtn:{fontFamily:"'Fredoka',sans-serif",fontWeight:600,fontSize:14,padding:"8px 22px",borderRadius:10,border:"none",background:"transparent",color:"rgba(234,252,255,0.6)",cursor:"pointer"},
   tabOn:{background:"#2ee6d6",color:"#06040d",boxShadow:"0 0 16px rgba(46,230,214,0.4)"},
-  controls:{display:"flex",gap:8,flexWrap:"wrap",marginBottom:12},
+  controls:{display:"flex",alignItems:"center",gap:12,marginBottom:14,flexWrap:"wrap"},
+  ctrlPrimary:{display:"flex",flexDirection:"column",gap:7,flex:1,minWidth:180},
+  ctrlSecondary:{display:"flex",gap:6},
+  timerWidget:{display:"flex",flexDirection:"column",alignItems:"center",padding:"10px 18px",borderRadius:16,background:"rgba(0,0,0,0.35)",border:"1px solid rgba(46,230,214,0.22)",minWidth:110,gap:2},
+  timerVal:{fontFamily:"'Fredoka',sans-serif",fontWeight:700,fontSize:28,lineHeight:1,color:"#eafcff",letterSpacing:"1px"},
+  timerSub:{fontWeight:800,fontSize:11,color:"#2ee6d6",letterSpacing:"0.4px",textAlign:"center"},
   btn:{fontFamily:"'Fredoka',sans-serif",fontWeight:600,fontSize:15,padding:"11px 16px",borderRadius:13,border:"none",cursor:"pointer",color:"#06040d"},
+  btnSm:{fontSize:13,padding:"8px 13px"},
   btnPrimary:{background:"#eafcff"},
   btnMint:{background:"#2ee6d6",boxShadow:"0 0 20px rgba(46,230,214,0.45)"},
   btnGhost:{background:"rgba(46,230,214,0.08)",color:"#eafcff",border:"1px solid rgba(46,230,214,0.3)"},
@@ -598,9 +626,7 @@ const S={
   hud:{position:"absolute",top:10,left:"50%",transform:"translateX(-50%)",textAlign:"center",pointerEvents:"none",textShadow:"0 2px 10px rgba(0,0,0,0.8)"},
   hudTimer:{fontFamily:"'Fredoka',sans-serif",fontWeight:700,fontSize:26,lineHeight:1},
   hudFresh:{fontWeight:800,fontSize:12,color:"#2ee6d6",letterSpacing:"0.5px"},
-  rowTimer:{marginLeft:"auto",display:"flex",alignItems:"baseline",gap:10,paddingRight:4,alignSelf:"center"},
-  rowTimerVal:{fontFamily:"'Fredoka',sans-serif",fontWeight:700,fontSize:24,lineHeight:1,color:"#eafcff"},
-  rowTimerFresh:{fontWeight:800,fontSize:12,color:"#2ee6d6",letterSpacing:"0.5px"},
+  divider:{height:1,background:"rgba(46,230,214,0.1)",margin:"14px 0 10px"},
   stamp:{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",textAlign:"center",animation:"stampPop 0.4s ease-out",pointerEvents:"none"},
   stampScene:{fontWeight:800,fontSize:13,letterSpacing:"2px",color:"#2ee6d6"},
   stampMain:{fontFamily:"'Fredoka',sans-serif",fontWeight:700,fontSize:34,textShadow:"0 0 24px rgba(46,230,214,0.8)"},
@@ -608,12 +634,12 @@ const S={
   finale:{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",textAlign:"center",animation:"finalePop 0.5s ease-out",background:"rgba(6,4,13,0.7)",padding:"24px 30px",borderRadius:18,border:"1px solid rgba(46,230,214,0.4)"},
   finaleMain:{fontFamily:"'Fredoka',sans-serif",fontWeight:700,fontSize:42,color:"#2ee6d6",textShadow:"0 0 30px rgba(46,230,214,0.9)"},
   finaleSub:{fontWeight:800,fontSize:14,marginTop:6},
-  coach:{marginTop:14,padding:"12px 16px",borderRadius:14,background:"rgba(46,230,214,0.06)",border:"1px solid rgba(46,230,214,0.2)",fontWeight:800,fontSize:14.5},
+  coach:{marginTop:10,padding:"11px 16px",borderRadius:14,background:"rgba(46,230,214,0.06)",border:"1px solid rgba(46,230,214,0.18)",fontWeight:700,fontSize:14,color:"rgba(234,252,255,0.9)"},
   coachWarn:{background:"rgba(255,107,122,0.16)",borderColor:"rgba(255,107,122,0.5)",color:"#ffd9cc"},
   coachDone:{background:"rgba(46,230,214,0.16)",borderColor:"rgba(46,230,214,0.5)",color:"#cffcf1"},
-  stats:{display:"flex",gap:10,marginTop:12},
+  statRow:{display:"flex",gap:10,marginTop:12},
   stat:{flex:1,textAlign:"center",padding:"10px 6px",borderRadius:14,background:"rgba(0,0,0,0.3)",border:"1px solid rgba(46,230,214,0.16)"},
-  statValue:{fontFamily:"'Fredoka',sans-serif",fontWeight:700,fontSize:19},
+  statValue:{fontFamily:"'Fredoka',sans-serif",fontWeight:700,fontSize:22},
   statLabel:{fontSize:10.5,fontWeight:800,color:"rgba(234,252,255,0.55)",textTransform:"uppercase",letterSpacing:"0.6px",marginTop:2},
   engineToggle:{marginTop:18,background:"none",border:"none",color:"rgba(234,252,255,0.6)",fontWeight:800,fontSize:13,cursor:"pointer",padding:0},
   engine:{marginTop:10,padding:14,borderRadius:14,background:"rgba(0,0,0,0.35)",border:"1px solid rgba(46,230,214,0.2)"},
