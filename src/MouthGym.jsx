@@ -335,7 +335,7 @@ export default function MouthGym(){
   },[ingest,unlockAudio]);
   const stopSim=useCallback(()=>{ if(simRef.current){ clearInterval(simRef.current); simRef.current=null; } setSimOn(false); inputRef.current={...inputRef.current,running:false,pressureHigh:false}; },[]);
 
-  useEffect(()=>{ worldRef.current={ vp:{x:0,y:0,w:WORLD_W,h:WORLD_H}, focused:null, lastFocus:0, intensity:0, particles:[], easeoff:[0,0,0,0], ent:[[],[],[],[]], beams:[], spawnT:[0,0,0,0], fireT:[0,0,0,0], jt:[0,0,0,0], prevN3:MAXG, flash:0, t:0 }; },[]);
+  useEffect(()=>{ worldRef.current={ vp:{x:0,y:0,w:WORLD_W,h:WORLD_H}, focused:null, lastFocus:0, intensity:0, particles:[], easeoff:[0,0,0,0], ent:[[],[],[],[]], beams:[], spawnT:[0,0,0,0], fireT:[0,0,0,0], jt:[0,0,0,0], prevN3:MAXG, flash:0, t:0, prevAq:null, quadTransT:0 }; },[]);
 
   /* logic loop */
   useEffect(()=>{
@@ -386,7 +386,12 @@ export default function MouthGym(){
       let aq=null; if(inp.running){ aq=typeof inp.quad==="number"?inp.quad:Math.min(3,Math.floor(((inp.seconds||0)%SESSION_SECONDS)/30)); }
       const target=(inp.running&&!inp.pressureHigh)?1:0; w.intensity+=(target-w.intensity)*Math.min(1,dt*4);
       if(aq!=null && inp.pressureHigh) w.easeoff[aq]+=dt;
-      if(stampRef.current!=null){ w.focused=stampRef.current; w.lastFocus=w.t; } else if(aq!=null){ w.focused=aq; w.lastFocus=w.t; } else if(w.t-w.lastFocus>1.3){ w.focused=null; }
+      // detect quad change -> trigger zoom-out pause before zooming into new quad
+      if(aq!==null && w.prevAq!==null && aq!==w.prevAq) w.quadTransT=0.9;
+      if(aq!==null) w.prevAq=aq;
+      if(w.quadTransT>0) w.quadTransT=Math.max(0,w.quadTransT-dt);
+      const inTransition=w.quadTransT>0;
+      if(stampRef.current!=null){ w.focused=stampRef.current; w.lastFocus=w.t; } else if(aq!=null && !inTransition){ w.focused=aq; w.lastFocus=w.t; } else if(inTransition){ w.focused=null; } else if(w.t-w.lastFocus>1.3){ w.focused=null; }
       let tv; if(w.focused==null){ tv={x:0,y:0,w:WORLD_W,h:WORLD_H}; } else { const c=cellRect(w.focused); tv={x:c.x-PAD,y:c.y-PAD,w:c.w+PAD*2,h:c.h+PAD*2}; }
       const k=Math.min(1,dt*5); w.vp.x+=(tv.x-w.vp.x)*k; w.vp.y+=(tv.y-w.vp.y)*k; w.vp.w+=(tv.w-w.vp.w)*k; w.vp.h+=(tv.h-w.vp.h)*k;
       for(let q=0;q<4;q++){ updateScene(w,q,{ p:prog[q]/100, active:aq===q, intensity:aq===q?w.intensity:0, pressureHigh:aq===q&&inp.pressureHigh }, dt, sfx); }
