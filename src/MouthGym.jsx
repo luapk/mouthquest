@@ -355,7 +355,7 @@ function MouthGymApp(){
       device.addEventListener("advertisementreceived",(e)=>{ const dv=e.manufacturerData&&e.manufacturerData.get(ORALB_MANUFACTURER); if(!dv) return; ingest(new Uint8Array(dv.buffer,dv.byteOffset,dv.byteLength),"real"); });
       await device.watchAdvertisements();
       setSource("real"); setCoach("Brush linked. Start brushing — the camera follows you in.");
-    catch(e){
+    } catch(e){
       const msg=e&&e.message?e.message:"";
       if(msg.includes("watchAdvertisements")||msg.includes("is not a function")){
         setError("Advertisement scanning isn't supported in this browser. Use Chrome on Android with chrome://flags → Experimental Web Platform Features enabled, or use Simulate brushing to demo.");
