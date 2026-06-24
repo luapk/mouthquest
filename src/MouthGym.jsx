@@ -355,7 +355,16 @@ function MouthGymApp(){
       device.addEventListener("advertisementreceived",(e)=>{ const dv=e.manufacturerData&&e.manufacturerData.get(ORALB_MANUFACTURER); if(!dv) return; ingest(new Uint8Array(dv.buffer,dv.byteOffset,dv.byteLength),"real"); });
       await device.watchAdvertisements();
       setSource("real"); setCoach("Brush linked. Start brushing — the camera follows you in.");
-    }catch(e){ setError(e&&e.message?e.message:"Could not connect to the brush."); }
+    catch(e){
+      const msg=e&&e.message?e.message:"";
+      if(msg.includes("watchAdvertisements")||msg.includes("is not a function")){
+        setError("Advertisement scanning isn't supported in this browser. Use Chrome on Android with chrome://flags → Experimental Web Platform Features enabled, or use Simulate brushing to demo.");
+      } else if(msg.includes("User cancelled")||msg.includes("chosen by the user")||msg.toLowerCase().includes("cancel")){
+        setError(null); // user closed the picker, not an error
+      } else {
+        setError(msg||"Could not connect to the brush.");
+      }
+    }
   },[ingest,unlockAudio]);
 
   const startSim=useCallback(()=>{ stopSim(); unlockAudio(); setSimOn(true); setSource("sim"); setError(null);
